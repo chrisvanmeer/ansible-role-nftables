@@ -1,17 +1,18 @@
 # Nftables
 
-1. [Overview](#overview)
-1. [Role Variables](#role-variables)
-     * [OS Specific Variables](#os-specific-variables)
-     * [Rules Dictionaries](#rules-dictionaries)
-1. [Examples](#examples)
-     * [With playbooks](#with-playbooks)
-     * [With group_vars and host_vars](#with-group_vars-and-host_vars)
-1. [Configuration](#configuration)
-     * [Fail2ban integration](#fail2ban-integration)
-1. [Development](#development)
-1. [License](#license)
-1. [Author Information](#author-information)
+- [Nftables](#nftables)
+  - [Overview](#overview)
+  - [Role Variables](#role-variables)
+    - [OS Specific Variables](#os-specific-variables)
+    - [Rules Dictionaries](#rules-dictionaries)
+  - [Examples](#examples)
+    - [With playbooks](#with-playbooks)
+    - [With group\_vars and host\_vars](#with-group_vars-and-host_vars)
+  - [Configuration](#configuration)
+    - [Fail2ban integration](#fail2ban-integration)
+  - [Development](#development)
+  - [License](#license)
+  - [Author Information](#author-information)
 
 ## Overview
 
@@ -183,6 +184,21 @@ nft_set_default:
 nft_set: {}
 nft_set_group: {}
 nft_set_host: {}
+
+# connection trackers
+nft_conntrack_default:
+  sip:
+    type: sip
+    protocol: udp
+  tftp:
+    type: tftp
+    protocol: udp
+  ftp:
+    type: ftp
+    protocol: ftp
+nft_conntrack: {}
+nft_conntrack_group: {}
+nft_conntrack_host: {}
 ```
 
 Those default will generate the following configuration :
@@ -201,6 +217,7 @@ table inet filter {
 		ct state established,related accept
 		ct state invalid drop
 	}
+	include "/etc/nftables.d/conntrack.nft"
 	include "/etc/nftables.d/sets.nft"
 	include "/etc/nftables.d/filter-input.nft"
 	include "/etc/nftables.d/filter-output.nft"
@@ -211,6 +228,18 @@ And you can get all rules and definitons by displaying the ruleset on the host�
 
 ```
 table inet filter {
+  ct helper sip {
+    type "sip" protocol udp;
+  }
+
+  ct helper tftp {
+    type "tftp" protocol udp;
+  }
+
+  ct helper ftp {
+    type "ftp" protocol udp;
+  }
+
 	set blackhole {
 		type ipv4_addr
 		elements = { 255.255.255.255, 224.0.0.1, 224.0.0.251}
@@ -284,6 +313,27 @@ table inet filter {
 * The weight (`400`) allow to order all merged rules (from
   <b>nft_input_*rules</b> dictionaries).
 * The text following the weight (`input torrent accepted`) is a small
+  description that will be added as a comment in **nft_input_conf_path** file
+  on the remote host.
+</details>
+
+<details>
+  <summary>Add a new <b>simple</b> filter rule for incoming traffic with a connection tracker (eg. 1 port for UDP/tftp) (<i>click to expand</i>)</summary>
+
+``` yml
+- hosts: serverXYZ
+  vars:
+      nft_input_rules:
+        400 input tftp accepted:
+          - 'udp dport 69 ct helper set "tftp"'
+  roles:
+    - role: ipr-cnrs.nftables
+```
+* **nft_input_group_rules** or **nft_input_host_rules** variables can
+  also be used.
+* The weight (`400`) allow to order all merged rules (from
+  <b>nft_input_*rules</b> dictionaries).
+* The text following the weight (`input tftp accepted`) is a small
   description that will be added as a comment in **nft_input_conf_path** file
   on the remote host.
 </details>
