@@ -322,6 +322,10 @@ table inet filter {
 ``` yml
 - hosts: serverXYZ
   vars:
+      nft_conntrack_host:
+        tftp:
+          type: tftp
+          protocol: udp
       nft_input_rules:
         400 input tftp accepted:
           - 'udp dport 69 ct helper set "tftp"'
