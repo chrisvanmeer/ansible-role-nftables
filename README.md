@@ -1,18 +1,17 @@
 # Nftables
 
-- [Nftables](#nftables)
-  - [Overview](#overview)
-  - [Role Variables](#role-variables)
-    - [OS Specific Variables](#os-specific-variables)
-    - [Rules Dictionaries](#rules-dictionaries)
-  - [Examples](#examples)
-    - [With playbooks](#with-playbooks)
-    - [With group\_vars and host\_vars](#with-group_vars-and-host_vars)
-  - [Configuration](#configuration)
-    - [Fail2ban integration](#fail2ban-integration)
-  - [Development](#development)
-  - [License](#license)
-  - [Author Information](#author-information)
+1. [Overview](#overview)
+1. [Role Variables](#role-variables)
+     * [OS Specific Variables](#os-specific-variables)
+     * [Rules Dictionaries](#rules-dictionaries)
+1. [Examples](#examples)
+     * [With playbooks](#with-playbooks)
+     * [With group_vars and host_vars](#with-group_vars-and-host_vars)
+1. [Configuration](#configuration)
+     * [Fail2ban integration](#fail2ban-integration)
+1. [Development](#development)
+1. [License](#license)
+1. [Author Information](#author-information)
 
 ## Overview
 
