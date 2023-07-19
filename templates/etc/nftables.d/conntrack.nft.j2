@@ -8,12 +8,11 @@
 {% endif %}
 {% set _ = setmerged.update(nft_conntrack_host) %}
 
-{% for set, rules in setmerged|dictsort  %}
-  {% if rules %}
+{% for set, ct in setmerged|dictsort  %}
+
+  {% if ct %}
 ct helper {{ set }} {
-    {% for rule in rules %}
-	type "{{ rule.type }}" protocol {{ rule.protocol }};
-    {% endfor %}
+  type "{{ ct.type }}" protocol {{ ct.protocol }};
 }
   {% endif %}
 
